@@ -86,7 +86,7 @@ async def balance(msg, args):
     checkUser(uid)
     ubal = config["users"][uid]["balance"]
     await client.send_message(msg.channel, "You have %s" % formatCurrency(ubal))
-async def balmod(msg, args):
+async def modifybalance(msg, args):
     target = msg.author
     if(len(args)<1 or len(args) > 2):
         await client.send_message(msg.channel, "Command syntax: `%sbalmod [input] [user (optional)]`. input can be relative (eg. +20, -5) or absolute (eg. 10)" % prefix)
@@ -226,7 +226,7 @@ currencySymbol = "ƒ"
 currencyFormat = "{SYMBOL}{AMOUNT}"
 commands = {
     "balance":balance,
-    "balmod":balmod,
+    "modifybalance":modifybalance,
     "permissionlevel":permissionlevel,
     "reloadconfig":reloadConfig,
     "help":help,
@@ -235,17 +235,18 @@ commandAliases = {
     "bal":"balance",
     "pl":"permissionlevel",
     "rlcfg":"reloadconfig",
-    "h":"help"}
+    "h":"help"
+    "modbal":"modifybalance"}
 helpEntries = {
     "help":"Shows a detailed description of a command, or a command list if none is provided.\nSyntax: `{PREFIX}help [command (optional)]`\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "balance":"Show the balance for the specified user (or yourself if none is given).\nSyntax: `{PREFIX}balance [target (optional)]`\ntarget: User to show the balance of\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
-    "balmod":"Modifies the balance of the specified user (or yourself if none is given) by the specified value.\nSyntax: `{PREFIX}balmod [value] [target (optional)]`\nvalue: the value to modify the balance by. Can be relative (eg +20, -10) or absolute (eg 5)\ntarget: User to modify the balance of.\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
+    "modifybalance":"Modifies the balance of the specified user (or yourself if none is given) by the specified value.\nSyntax: `{PREFIX}balmod [value] [target (optional)]`\nvalue: the value to modify the balance by. Can be relative (eg +20, -10) or absolute (eg 5)\ntarget: User to modify the balance of.\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "permissionlevel":"Gets or sets the permission level for the specified user (or yourself if none is given)\nSyntax: `{PREFIX}permissionlevel [target (optional)] [value (optional)]`\ntarget: the user who's permission level to get or set\nvalue: if given, set this as the target's permission level.\nPermission level {PERMISSIONLEVEL}\n\nAliases: {ALIASES}",
     "reloadconfig":"Reloads the bot's config.\nSyntax: `{PREFIX}reloadconfig`\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "awards":"Shows the specified user's lifetime {CURRENCYSINGULAR} reward count (or yours if none is given)\nSyntax: `{PREFIX}awards [target (optional)]`\ntarget: the user to display the awards of\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}"}
 permissionLevels = {
     "balance":1, # Anyone can use this command
-    "balmod":3, # Only moderators can use this
+    "modifybalance":3, # Only moderators can use this
     "permissionlevel":3,
     "reloadconfig":3,
     "help":1,
