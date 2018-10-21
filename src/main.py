@@ -3,9 +3,7 @@ import sys
 import discord
 import asyncio
 import json
-
 client = discord.Client()
-
 @client.event
 async def on_ready():
     print('Started bot as %s (%s)' % (client.user.name, client.user.id))
@@ -68,8 +66,11 @@ def loadConfig():
     except Exception as e:
         print("Could not load config file\n", e)
         sys.exit(1)
-def formatCurrency(amount):
-    return currencyFormat.replace("{AMOUNT}", str(amount)).replace("{SYMBOL}", currencySymbol)
+def formatCurrency(amount, type):
+    if type=="number":
+        return currencyFormatNumber.replace("{AMOUNT}", str(amount)).replace("{SYMBOL}", currencySymbol)
+    elif type=="text":
+        return currencyFormatText.replace("{AMOUNT}", str(amount)).replace("{NAME}", currencyNameSingular if amount==1 else currencyNamePleurl)
 def getPermissionLevel(user):
     uid = user.id
     highestpl = config["users"][uid]["permissionLevel"]
@@ -82,10 +83,17 @@ def getPermissionLevel(user):
                 highestpl = config["roles"][role.id]["permissionLevel"]
     return highestpl
 async def balance(msg, args):
-    uid = msg.author.id
+    if len(args)==0:
+        uid = msg.author.id
+    elif len(msg.mentions):
+        uid = msg.mentions[0].id
+    else:
+        await client.send_message("Syntax error, first argument must be a user mention or nothing")
+        return
     checkUser(uid)
     ubal = config["users"][uid]["balance"]
-    await client.send_message(msg.channel, "You have %s" % formatCurrency(ubal))
+    if uid==msg.author.id: await client.send_message(msg.channel, "You have %s" % formatCurrency(ubal, "text"))
+    else: await client.send_message(msg.channel, "%s has %s" % (msg.mentions[0].name, formatCurrency(ubal, "text")))
 async def modifybalance(msg, args):
     target = msg.author
     if(len(args)<1 or len(args) > 2):
@@ -112,7 +120,7 @@ async def modifybalance(msg, args):
         # The input was absolute
         config["users"][uid]["balance"] = amount
     saveConfig()
-    await client.send_message(msg.channel, "Updated %s's balance to %s. (was %s)" % (target.name, formatCurrency(config["users"][uid]["balance"]), formatCurrency(oldbal)))
+    await client.send_message(msg.channel, "Updated %s's balance to %s. (was %s)" % (target.name, formatCurrency(config["users"][uid]["balance"], "number"), formatCurrency(oldbal, "number")))
 async def permissionlevel(msg, args):
     if len(args)==0:
         uid = msg.author.id
@@ -214,16 +222,16 @@ async def awards(msg, args):
     if len(msg.mentions)>0: target = msg.mentions[0]
     checkUser(target.id)
     uawards = config["users"][target.id]["awards"]
-    if target!=msg.author: await client.send_message(msg.channel, "%s has received %s lifetime award%s" % (target.name, uawards, "" if uawards == 1 else "s"))
-    else: await client.send_message(msg.channel, "You have received %s lifetime award%s" % (uawards, "" if uawards == 1 else "s"))
-
+    if target!=msg.author: await client.send_message(msg.channel, "%s has received %s in lifetime awards" % (target.name, formatCurrency(uawards, "number")))
+    else: await client.send_message(msg.channel, "You have received %s in lifetime awards" % formatCurrency(uawards, "number"))
 config = {}
 loadConfig()
 prefix = "*"
 currencyNameSingular = "Flapjack"
 currencyNamePleurl = "Flapjacks"
 currencySymbol = "ƒ"
-currencyFormat = "{SYMBOL}{AMOUNT}"
+currencyFormatNumber = "{SYMBOL}{AMOUNT}"
+currencyFormatText = "{AMOUNT} {NAME}"
 commands = {
     "balance":balance,
     "modifybalance":modifybalance,
@@ -253,6 +261,5 @@ permissionLevels = {
     "awards":1}
 reactionModifiers = {
     "logo":-1,
-    "🍆":1
-}
+    "🍆":1}
 client.run(config["token"])
