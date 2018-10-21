@@ -235,7 +235,7 @@ commandAliases = {
     "bal":"balance",
     "pl":"permissionlevel",
     "rlcfg":"reloadconfig",
-    "h":"help"
+    "h":"help",
     "modbal":"modifybalance"}
 helpEntries = {
     "help":"Shows a detailed description of a command, or a command list if none is provided.\nSyntax: `{PREFIX}help [command (optional)]`\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
