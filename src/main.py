@@ -237,7 +237,7 @@ commandAliases = {
     "rlcfg":"reloadconfig",
     "h":"help"}
 helpEntries = {
-    "help":"Shows a detailed description of a command, or a command list if none is provided.\nSyntax: `{PREFIX}help [command (optional)]\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
+    "help":"Shows a detailed description of a command, or a command list if none is provided.\nSyntax: `{PREFIX}help [command (optional)]`\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "balance":"Show the balance for the specified user (or yourself if none is given).\nSyntax: `{PREFIX}balance [target (optional)]`\ntarget: User to show the balance of\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "balmod":"Modifies the balance of the specified user (or yourself if none is given) by the specified value.\nSyntax: `{PREFIX}balmod [value] [target (optional)]`\nvalue: the value to modify the balance by. Can be relative (eg +20, -10) or absolute (eg 5)\ntarget: User to modify the balance of.\nPermission level {PERMISSIONLEVEL}\nAliases: {ALIASES}",
     "permissionlevel":"Gets or sets the permission level for the specified user (or yourself if none is given)\nSyntax: `{PREFIX}permissionlevel [target (optional)] [value (optional)]`\ntarget: the user who's permission level to get or set\nvalue: if given, set this as the target's permission level.\nPermission level {PERMISSIONLEVEL}\n\nAliases: {ALIASES}",
