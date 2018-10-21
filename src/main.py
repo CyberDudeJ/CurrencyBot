@@ -166,7 +166,7 @@ async def permissionlevel(msg, args):
                 config["users"][target.id]["permissionLevel"] = int(value)
                 saveConfig()
             except:
-                await client.send_message(msg.channel, "Syntax error, second argument must be an integet (got %s)" % value)
+                await client.send_message(msg.channel, "Syntax error, second argument must be an integer (got %s)" % value)
                 return
             await client.send_message(msg.channel, "Updated %s's permission level to %s." % (target.name, value))
         elif len(msg.role_mentions)>0:
@@ -176,7 +176,7 @@ async def permissionlevel(msg, args):
                 config["roles"][target.id]["permissionLevel"] = int(value)
                 saveConfig()
             except:
-                await client.send_message(msg.channel, "Syntax error, second argument must be an integet (got %s)" % value)
+                await client.send_message(msg.channel, "Syntax error, second argument must be an integer (got %s)" % value)
                 return
             await client.send_message(msg.channel, "Updated %s's permission level to %s." % (target.name, value))
 async def reloadConfig(msg, args):
