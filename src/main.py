@@ -260,6 +260,6 @@ permissionLevels = {
     "help":1,
     "awards":1}
 reactionModifiers = {
-    "logo":-1,
-    "🍆":1}
+    "nonGP":-1,
+    "plussing":1}
 client.run(config["token"])
