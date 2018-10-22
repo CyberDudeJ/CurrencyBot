@@ -7,6 +7,7 @@ client = discord.Client()
 @client.event
 async def on_ready():
     print('Started bot as %s (%s)' % (client.user.name, client.user.id))
+    await client.change_presence(game=discord.Game(name='*help'))
 @client.event
 async def on_message(message):
     if message.content.startswith(prefix):
@@ -36,6 +37,7 @@ async def on_reaction_add(reaction, user):
     if type(reaction.emoji)==discord.Emoji: emoji = reaction.emoji.name
     else: emoji = reaction.emoji
     if emoji in reactionModifiers and user != reaction.message.author:
+        checkUser(reaction.message.author.id)
         config["users"][reaction.message.author.id]["balance"] += reactionModifiers[emoji]
         config["users"][reaction.message.author.id]["awards"] += reactionModifiers[emoji]
         saveConfig()
@@ -45,6 +47,7 @@ async def on_reaction_remove(reaction, user):
         if type(reaction.emoji)==discord.Emoji: emoji = reaction.emoji.name
         else: emoji = reaction.emoji
         if emoji in reactionModifiers and user != reaction.message.author:
+            checkUser(reaction.message.author.id)
             config["users"][reaction.message.author.id]["balance"] -= reactionModifiers[emoji]
             config["users"][reaction.message.author.id]["awards"] -= reactionModifiers[emoji]
             saveConfig()
@@ -139,7 +142,7 @@ async def permissionlevel(msg, args):
                 # the mention was not a role mention
                 matches = 0
                 for role in msg.server.roles:
-                    if role.name==args[0]:
+                    if role.name.lower().replace(" ", "")==args[0]:
                         matches += 1
                         userole = role
                 if matches==0:
@@ -187,6 +190,22 @@ async def permissionlevel(msg, args):
                 await client.send_message(msg.channel, "Syntax error, second argument must be an integer (got %s)" % value)
                 return
             await client.send_message(msg.channel, "Updated %s's permission level to %s." % (target.name, value))
+        else:
+            matches = 0
+            userole = None
+            for role in msg.server.roles:
+                if role.name.lower().replace(" ", "")==args[0]:
+                    matches += 1
+                    userole = role
+            if userole!=None:
+                checkRole(userole.id)
+                try:
+                    config["roles"][userole.id]["permissionLevel"] = int(value)
+                    saveConfig()
+                except:
+                    await client.send_message(msg.channel, "Syntax error, second argument must be an integer (got %s)" % value)
+                    return
+                await client.send_message(msg.channel, "Updated %s's permission level to %s." % (userole.name, value))
 async def reloadConfig(msg, args):
     loadConfig()
     await client.send_message(msg.channel, "Reloaded config!")
@@ -256,10 +275,11 @@ permissionLevels = {
     "balance":1, # Anyone can use this command
     "modifybalance":3, # Only moderators can use this
     "permissionlevel":3,
-    "reloadconfig":3,
+    "reloadconfig":4,
     "help":1,
     "awards":1}
 reactionModifiers = {
     "nonGP":-1,
     "plussing":1}
+
 client.run(config["token"])
